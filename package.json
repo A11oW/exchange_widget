@@ -11,7 +11,7 @@
     "stats:analyzer": "webpack-bundle-analyzer umd/stats.json dist",
     "test": "jest --no-cache",
     "test:coverage": "jest --no-cache --coverage",
-    "test:watch": "jest --no-cache --watch"
+    "test:watch": "jest --no-cache --watch --coverage"
   },
   "dependencies": {
     "currency.js": "^1.2.1",
@@ -50,6 +50,7 @@
     "express": "^4.16.4",
     "express-http-proxy": "^1.5.1",
     "jest": "^24.0.0",
+    "jest-fetch-mock": "^2.1.0",
     "jest-styled-components": "^6.3.1",
     "jest-svg-transformer": "^1.0.0",
     "nwb": "0.23.x",

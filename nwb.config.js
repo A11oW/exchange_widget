@@ -5,13 +5,6 @@ module.exports = {
   babel: {
     runtime: 'helpers',
     plugins: ['transform-decorators-legacy'],
-    config(config) {
-      // Change config as you wish
-
-      console.log(config);
-      // You MUST return the edited config object
-      return config
-    }
   },
   webpack: {
     config(config) {

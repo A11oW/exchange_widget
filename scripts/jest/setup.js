@@ -12,3 +12,6 @@ global.snapshot = {
     render: Enzyme.render, // render only calls render but renders all children
     mount: Enzyme.mount, // mount support all lifecycle
 };
+
+// Fetch API
+global.fetch = require('jest-fetch-mock');

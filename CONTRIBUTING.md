@@ -10,6 +10,8 @@
 
 - `npm start` will run the app's development server at [http://localhost:3000](http://localhost:3000) with hot module reloading.
 
+- `npm run server` will run the local mock rate development server at [http://localhost:4000](http://localhost:4000)
+
 ## Running Tests
 
 - `npm test` will run the tests once.

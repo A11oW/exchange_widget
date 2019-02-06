@@ -9,6 +9,7 @@ import App from './App';
 import ExchangeModel from './models/ExchangeModel';
 
 const store = new ExchangeModel();
+store.runFetchRates();
 
 makeInspectable(store);
 

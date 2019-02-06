@@ -16,7 +16,7 @@ class OutSlider extends React.Component {
   };
 
   onChangeSlide = (index, elem) => {
-    this.props.store.changefromCurrency(elem.dataset.currency);
+    this.props.store.changeFromCurrency(elem.dataset.currency);
   };
 
   onChangeValue = value => this.props.store.changeOutValue(value);

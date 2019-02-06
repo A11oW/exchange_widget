@@ -10,7 +10,7 @@ class FieldGroup extends React.Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
     currency: PropTypes.shape({
-      value: PropTypes.number.isRequired,
+      value: PropTypes.string.isRequired,
       format: PropTypes.string.isRequired,
     }).isRequired,
     pocket: PropTypes.shape({

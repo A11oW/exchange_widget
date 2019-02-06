@@ -1,6 +1,3 @@
-// import expect from 'expect';
-// import React from 'react';
-
 import formatNumber from '../../src/utils/formatNumber';
 
 describe('Util formatNumber', () => {

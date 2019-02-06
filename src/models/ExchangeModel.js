@@ -2,9 +2,10 @@ import { action, computed, observable, reaction } from 'mobx';
 import remotedev from 'mobx-remotedev';
 import fx from 'money';
 import currency from 'currency.js';
+import api from '../api';
 
-import InputCurrencyModel from './InputCurrency';
-import { FETCH_RATES_ATTEMPTS, RATES_ENDPOINT, STATES, CURRENCY, CURRENCY_SYMBOLS } from '../constants';
+import InputCurrencyModel from './InputCurrencyModel';
+import { FETCH_RATES_ATTEMPTS, STATES, CURRENCY, CURRENCY_SYMBOLS } from '../constants';
 
 @remotedev({ global: true })
 class ExchangeModel {
@@ -24,47 +25,46 @@ class ExchangeModel {
   @observable inCurrency;
   @observable lastFocusedInputCurrency;
 
-  @action changeCurrentInputValue(value) {
-    this.fromCurrency.value = value;
-  }
+  @action changeFromCurrency(currencyName) {
+    this.fromCurrency.setCurrency(currencyName);
 
-  @action changefromCurrency(currencyName) {
-    this.fromCurrency.currency = currencyName;
-
-    this.fromCurrency.value = '';
-    this.inCurrency.value = '';
+    this.fromCurrency.setValue(0);
+    this.inCurrency.setValue(0);
   }
 
   @action changeOutValue(value) {
-    this.fromCurrency.value = value;
+    this.fromCurrency.setValue(value);
 
     if (this.fromCurrency.currency === this.inCurrency.currency) {
-      this.inCurrency.value = value;
+      this.inCurrency.setValue(value);
       return;
     }
 
-    this.inCurrency.value = fx.convert(value, {
+    this.inCurrency.setValue(fx.convert(value, {
       from: this.fromCurrency.currency,
       to: this.inCurrency.currency,
-    });
+    }));
   }
 
   @action changeInCurrency(currencyName) {
-    this.inCurrency.currency = currencyName;
+    this.inCurrency.setCurrency(currencyName);
+
+    this.inCurrency.setValue(0);
+    this.fromCurrency.setValue(0);
   }
 
   @action changeInValue(value) {
-    this.inCurrency.value = value;
+    this.inCurrency.setValue(value);
 
     if (this.inCurrency.currency === this.fromCurrency.currency) {
-      this.fromCurrency.value = value;
+      this.fromCurrency.setValue(value);
       return;
     }
 
-    this.fromCurrency.value = fx.convert(value, {
+    this.fromCurrency.setValue(fx.convert(value, {
       from: this.inCurrency.currency,
       to: this.fromCurrency.currency,
-    });
+    }));
   }
 
   /**
@@ -91,17 +91,17 @@ class ExchangeModel {
       if (this.lastFocusedInputCurrency === 'in') {
         const value = this.inCurrency.value;
 
-        this.fromCurrency.value = fx.convert(value, {
+        this.fromCurrency.setValue(fx.convert(value, {
           from: this.inCurrency.currency,
           to: this.fromCurrency.currency,
-        });
+        }));
       } else if (this.lastFocusedInputCurrency === 'out') {
         const value = this.fromCurrency.value;
 
-        this.inCurrency.value = fx.convert(value, {
+        this.inCurrency.setValue(fx.convert(value, {
           from: this.fromCurrency.currency,
           to: this.inCurrency.currency,
-        });
+        }))
       }
     });
   }
@@ -126,7 +126,7 @@ class ExchangeModel {
   @action
   fetchRatesRequest() {
     this.fetchRatesState = STATES.FETCH_RATES__PENDING;
-    fetch(RATES_ENDPOINT)
+    api.rates.getRates()
       .then(response => response.json())
       .then(data => this.fetchRatesSuccess(data))
       .catch(error => this.fetchRatesError(error));
@@ -178,6 +178,11 @@ class ExchangeModel {
     }, 10000);
   }
 
+  @action
+  stopFetchRates() {
+    clearInterval(this.fetchRatesIntervalId);
+  }
+
   @action setExchange() {
     const fromCurrency = this.fromCurrency.currency;
     const inCurrency = this.inCurrency.currency;
@@ -202,8 +207,6 @@ class ExchangeModel {
 
     this.fromCurrency = remotedev(new InputCurrencyModel(this.currency[0]), { name: 'fromCurrency' });
     this.inCurrency = remotedev(new InputCurrencyModel(this.currency[1]), { name: 'inCurrency' });
-
-    this.runFetchRates();
   }
 }
 

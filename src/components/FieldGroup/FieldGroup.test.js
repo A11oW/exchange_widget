@@ -13,7 +13,7 @@ describe('<FieldGroupt />', () => {
     props = {
       label: 'USD',
       currency: {
-        value: 0,
+        value: "0",
         format: '',
       },
       prefix: '',
@@ -49,7 +49,7 @@ describe('<FieldGroupt />', () => {
   });
 
   test('render <Value />', () => {
-    props.currency.value = 14;
+    props.currency.value = "14";
     props.currency.format = '14.01';
     props.prefix = '-';
     const wrapper = mount(<FieldGroupt {...props} />);
@@ -60,7 +60,7 @@ describe('<FieldGroupt />', () => {
   });
 
   test('onChange <Value />', () => {
-    props.currency.value = 14;
+    props.currency.value = "14";
     props.currency.format = '14.01';
     props.prefix = '-';
     props.onChange = sinon.spy(value => value);
