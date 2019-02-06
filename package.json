@@ -1,0 +1,69 @@
+{
+  "name": "exchange",
+  "version": "1.0.0",
+  "description": "Describe exchange here",
+  "private": true,
+  "scripts": {
+    "build": "nwb build-react-app",
+    "clean": "nwb clean-app",
+    "start": "nwb serve-react-app",
+    "test:jest": "jest",
+    "stats:analyzer": "webpack-bundle-analyzer umd/stats.json dist",
+    "test": "jest --no-cache",
+    "test:coverage": "jest --no-cache --coverage",
+    "test:watch": "jest --no-cache --watch"
+  },
+  "dependencies": {
+    "currency.js": "^1.2.1",
+    "mirrorkey": "^1.2.0",
+    "mobx": "^5.9.0",
+    "mobx-devtools-mst": "^0.9.18",
+    "mobx-react": "^5.4.3",
+    "mobx-react-devtools": "^6.0.3",
+    "mobx-remotedev": "^0.3.0",
+    "mobx-state-tree": "^3.10.2",
+    "money": "^0.2.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-router-dom": "^4.3.1",
+    "react-swipe": "^6.0.4",
+    "styled-components": "^4.1.3",
+    "svg-inline-loader": "^0.8.0",
+    "svg-inline-react": "^3.1.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/plugin-proposal-export-default-from": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "babel-jest": "^24.0.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "chai": "^4.2.0",
+    "cors": "^2.8.5",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.9.0",
+    "express": "^4.16.4",
+    "express-http-proxy": "^1.5.1",
+    "jest": "^24.0.0",
+    "jest-styled-components": "^6.3.1",
+    "jest-svg-transformer": "^1.0.0",
+    "nwb": "0.23.x",
+    "react-test-renderer": "^16.7.0",
+    "sinon": "^7.2.3",
+    "stats-webpack-plugin": "^0.7.0",
+    "webpack-bundle-analyzer": "^3.0.3"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": "",
+  "jest": {
+    "projects": [
+      "<rootDir>/jest.config.js"
+    ]
+  }
+}
