@@ -1,7 +1,15 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { BottomBar, Box, Button, Inner, Link, Сurrency, СurrencyWrap } from './CurrenciesList.styles';
+import {
+  BottomBar,
+  Box,
+  Button,
+  Inner,
+  Link,
+  Сurrency,
+  СurrencyWrap,
+} from './CurrenciesList.styles';
 import IconArrowRotate from '../../../../components/Icons/IconArrowRight';
 
 @inject('store')
@@ -18,11 +26,9 @@ class CurrenciesList extends React.Component {
               <СurrencyWrap
                 key={currency}
                 index={index}
-                deg={((360) / (pockets.length)) * index}
+                deg={(360 / pockets.length) * index}
               >
-                <Сurrency>
-                  {store.pockets[currency].format()}
-                </Сurrency>
+                <Сurrency>{store.pockets[currency].format()}</Сurrency>
               </СurrencyWrap>
             );
           })}

@@ -7,7 +7,15 @@ import InSlider from './components/InSlider/index';
 import TopBar from './components/TopBar';
 import Error from '../../components/Error';
 import Loader from '../../components/Loader';
-import { Box, CurrencyBottom, CurrencyTop, Half, Link, LoaderCenter, Rates } from './Exchange.styles';
+import {
+  Box,
+  CurrencyBottom,
+  CurrencyTop,
+  Half,
+  Link,
+  LoaderCenter,
+  Rates,
+} from './Exchange.styles';
 import { STATES } from '../../constants';
 
 @inject('store')

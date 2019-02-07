@@ -26,7 +26,7 @@ export default class InputCurrencyModel {
   }
 
   @action setValue(value) {
-    if ((!Number.isFinite(value) && typeof value !== 'string')) {
+    if (!Number.isFinite(value) && typeof value !== 'string') {
       throw new RangeError('Argument currency must be string or number');
     }
 
@@ -37,4 +37,3 @@ export default class InputCurrencyModel {
     return formatNumber(this.value).toString();
   }
 }
-

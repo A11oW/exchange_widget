@@ -22,7 +22,7 @@ class OutSlider extends React.Component {
   onChangeValue = value => this.props.store.changeInValue(value);
 
   onFocusInput = () => {
-    this.props.store.setFocusedInputCurrency("in");
+    this.props.store.setFocusedInputCurrency('in');
   };
 
   render() {
@@ -53,10 +53,12 @@ class OutSlider extends React.Component {
           ))}
         </Swipe>
         <Points>
-          {
-            Object.entries(pockets).map(([currency]) =>
-              <Point key={`point-${currency}`} active={currency === inCurrency.currency} />)
-          }
+          {Object.entries(pockets).map(([currency]) => (
+            <Point
+              key={`point-${currency}`}
+              active={currency === inCurrency.currency}
+            />
+          ))}
         </Points>
       </Box>
     );

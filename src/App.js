@@ -10,7 +10,11 @@ import { STATES } from './constants';
 
 const App = ({ store }) => {
   if (store.fetchRatesState === STATES.FETCH_RATES__FAILURE) {
-    return (<Box><Error /></Box>);
+    return (
+      <Box>
+        <Error />
+      </Box>
+    );
   }
 
   if (!Object.keys(store.rates).length) {
@@ -21,10 +25,7 @@ const App = ({ store }) => {
     );
   }
 
-  return [
-    <DevTools key="devtool" />,
-    <Routes key="routes" />,
-  ];
+  return [<DevTools key="devtool" />, <Routes key="routes" />];
 };
 
 export default inject('store')(observer(App));

@@ -10,7 +10,7 @@ import { CURRENCY, CURRENCY_SYMBOLS, STATES } from '../src/constants';
 describe('<App />', () => {
   let Store;
   beforeEach(() => {
-    Store = function () {
+    Store = function() {
       return {
         currency: CURRENCY,
         currency_symbols: CURRENCY_SYMBOLS,
@@ -32,36 +32,44 @@ describe('<App />', () => {
   });
 
   test('render', () => {
-    const store = new Store;
+    const store = new Store();
     const wrapper = shallow(<App store={store} />);
 
     expect(wrapper).to.have.lengthOf(1);
   });
 
   test('render Loader', () => {
-    const store = new Store;
+    const store = new Store();
     const wrapper = mount(<App store={store} />);
     expect(wrapper).to.have.lengthOf(1);
     expect(wrapper.find(Loader)).to.have.lengthOf(1);
   });
 
   test('render Error state', () => {
-    const store = new Store;
+    const store = new Store();
     store.fetchRatesState = STATES.FETCH_RATES__FAILURE;
-    const wrapper = mount(<Provider store={store}><App /></Provider>);
+    const wrapper = mount(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
     const h3 = wrapper.find('h3');
     expect(h3).to.have.lengthOf(1);
     expect(h3.text()).to.eq('🥺 Sorry, An error has occurred on the server.');
   });
 
   xtest('render routes', () => {
-    const store = new Store;
+    const store = new Store();
     store.rates = {
       GBP: 1,
       USD: 1.3033607375,
       EUR: 1.1466180501,
     };
-    const wrapper = mount(<Provider store={store}><App /></Provider>);
+    const wrapper = mount(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
     expect(wrapper).to.have.lengthOf(1);
   });
 

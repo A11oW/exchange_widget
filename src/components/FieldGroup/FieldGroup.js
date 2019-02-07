@@ -26,7 +26,7 @@ class FieldGroup extends React.Component {
     super(props);
   }
 
-  onChangeValue = (e) => {
+  onChangeValue = e => {
     const { currency, pristine, pocket } = this.props;
     let value = formatNumber(e.target.value, pristine);
 
@@ -43,10 +43,11 @@ class FieldGroup extends React.Component {
 
   render() {
     const { label, currency, prefix, pocket } = this.props;
-    const valueWithPrefix = currency.value && currency.value.toString().length
-      ? (prefix + currency.format)
-      : '';
-    const fontSize = 3 - (valueWithPrefix.length * 0.06);
+    const valueWithPrefix =
+      currency.value && currency.value.toString().length
+        ? prefix + currency.format
+        : '';
+    const fontSize = 3 - valueWithPrefix.length * 0.06;
 
     return (
       <Box>

@@ -13,7 +13,7 @@ describe('<FieldGroupt />', () => {
     props = {
       label: 'USD',
       currency: {
-        value: "0",
+        value: '0',
         format: '',
       },
       prefix: '',
@@ -49,18 +49,20 @@ describe('<FieldGroupt />', () => {
   });
 
   test('render <Value />', () => {
-    props.currency.value = "14";
+    props.currency.value = '14';
     props.currency.format = '14.01';
     props.prefix = '-';
     const wrapper = mount(<FieldGroupt {...props} />);
     const $Value = wrapper.find(Value);
 
     expect($Value).to.have.lengthOf(1);
-    expect($Value.getDOMNode().attributes.getNamedItem('value').value).eq('-14.01');
+    expect($Value.getDOMNode().attributes.getNamedItem('value').value).eq(
+      '-14.01'
+    );
   });
 
   test('onChange <Value />', () => {
-    props.currency.value = "14";
+    props.currency.value = '14';
     props.currency.format = '14.01';
     props.prefix = '-';
     props.onChange = sinon.spy(value => value);

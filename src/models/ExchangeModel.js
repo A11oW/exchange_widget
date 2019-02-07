@@ -5,7 +5,12 @@ import currency from 'currency.js';
 import api from '../api';
 
 import InputCurrencyModel from './InputCurrencyModel';
-import { FETCH_RATES_ATTEMPTS, STATES, CURRENCY, CURRENCY_SYMBOLS } from '../constants';
+import {
+  FETCH_RATES_ATTEMPTS,
+  STATES,
+  CURRENCY,
+  CURRENCY_SYMBOLS,
+} from '../constants';
 
 @remotedev({ global: true })
 class ExchangeModel {
@@ -40,10 +45,12 @@ class ExchangeModel {
       return;
     }
 
-    this.inCurrency.setValue(fx.convert(value, {
-      from: this.fromCurrency.currency,
-      to: this.inCurrency.currency,
-    }));
+    this.inCurrency.setValue(
+      fx.convert(value, {
+        from: this.fromCurrency.currency,
+        to: this.inCurrency.currency,
+      })
+    );
   }
 
   @action changeInCurrency(currencyName) {
@@ -61,10 +68,12 @@ class ExchangeModel {
       return;
     }
 
-    this.fromCurrency.setValue(fx.convert(value, {
-      from: this.inCurrency.currency,
-      to: this.fromCurrency.currency,
-    }));
+    this.fromCurrency.setValue(
+      fx.convert(value, {
+        from: this.inCurrency.currency,
+        to: this.fromCurrency.currency,
+      })
+    );
   }
 
   /**
@@ -79,7 +88,10 @@ class ExchangeModel {
   }
 
   @computed get currencyRate() {
-    return this.rates[this.inCurrency.currency] / this.rates[this.fromCurrency.currency];
+    return (
+      this.rates[this.inCurrency.currency] /
+      this.rates[this.fromCurrency.currency]
+    );
   }
 
   enableReactionOnChangingRates() {
@@ -87,23 +99,30 @@ class ExchangeModel {
       return;
     }
 
-    this.reactionOnChangingRates = reaction(() => this.rates, (rates) => {
-      if (this.lastFocusedInputCurrency === 'in') {
-        const value = this.inCurrency.value;
+    this.reactionOnChangingRates = reaction(
+      () => this.rates,
+      rates => {
+        if (this.lastFocusedInputCurrency === 'in') {
+          const value = this.inCurrency.value;
 
-        this.fromCurrency.setValue(fx.convert(value, {
-          from: this.inCurrency.currency,
-          to: this.fromCurrency.currency,
-        }));
-      } else if (this.lastFocusedInputCurrency === 'out') {
-        const value = this.fromCurrency.value;
+          this.fromCurrency.setValue(
+            fx.convert(value, {
+              from: this.inCurrency.currency,
+              to: this.fromCurrency.currency,
+            })
+          );
+        } else if (this.lastFocusedInputCurrency === 'out') {
+          const value = this.fromCurrency.value;
 
-        this.inCurrency.setValue(fx.convert(value, {
-          from: this.fromCurrency.currency,
-          to: this.inCurrency.currency,
-        }))
+          this.inCurrency.setValue(
+            fx.convert(value, {
+              from: this.fromCurrency.currency,
+              to: this.inCurrency.currency,
+            })
+          );
+        }
       }
-    });
+    );
   }
 
   disableReactionOnChangingRates() {
@@ -126,7 +145,8 @@ class ExchangeModel {
   @action
   fetchRatesRequest() {
     this.fetchRatesState = STATES.FETCH_RATES__PENDING;
-    api.rates.getRates()
+    api.rates
+      .getRates()
       .then(response => response.json())
       .then(data => this.fetchRatesSuccess(data))
       .catch(error => this.fetchRatesError(error));
@@ -145,7 +165,7 @@ class ExchangeModel {
 
       this.ratesTimestamp = date;
     } catch (error) {
-      throw new RangeError("Invalid rates date from server");
+      throw new RangeError('Invalid rates date from server');
     }
 
     fx.base = data.base;
@@ -158,6 +178,7 @@ class ExchangeModel {
   @action
   fetchRatesError() {
     // TODO differents logic from depending response codes (5xx, 4xx)
+    // for example for 4xx don't retry request
     if (this.fetchRatesFailCounter === FETCH_RATES_ATTEMPTS - 1) {
       this.fetchRatesState = STATES.FETCH_RATES__FAILURE;
       this.fetchRatesFailCounter = 0;
@@ -187,7 +208,10 @@ class ExchangeModel {
     const fromCurrency = this.fromCurrency.currency;
     const inCurrency = this.inCurrency.currency;
     const fromValue = this.fromCurrency.value;
-    const inValue = fx.convert(fromValue, { from: fromCurrency, to: inCurrency });
+    const inValue = fx.convert(fromValue, {
+      from: fromCurrency,
+      to: inCurrency,
+    });
 
     this.pockets[fromCurrency] = this.pockets[fromCurrency].subtract(fromValue);
     this.pockets[inCurrency] = this.pockets[inCurrency].add(inValue);
@@ -201,12 +225,25 @@ class ExchangeModel {
     this.currency = CURRENCY;
     this.currencySymbol = CURRENCY_SYMBOLS;
 
-    this.pockets.GBP = currency(58.33, { formatWithSymbol: true, symbol: this.currencySymbol.GBP });
-    this.pockets.EUR = currency(116.2, { formatWithSymbol: true, symbol: this.currencySymbol.EUR });
-    this.pockets.USD = currency(25.51, { formatWithSymbol: true, symbol: this.currencySymbol.USD });
+    this.pockets.GBP = currency(58.33, {
+      formatWithSymbol: true,
+      symbol: this.currencySymbol.GBP,
+    });
+    this.pockets.EUR = currency(116.2, {
+      formatWithSymbol: true,
+      symbol: this.currencySymbol.EUR,
+    });
+    this.pockets.USD = currency(25.51, {
+      formatWithSymbol: true,
+      symbol: this.currencySymbol.USD,
+    });
 
-    this.fromCurrency = remotedev(new InputCurrencyModel(this.currency[0]), { name: 'fromCurrency' });
-    this.inCurrency = remotedev(new InputCurrencyModel(this.currency[1]), { name: 'inCurrency' });
+    this.fromCurrency = remotedev(new InputCurrencyModel(this.currency[0]), {
+      name: 'fromCurrency',
+    });
+    this.inCurrency = remotedev(new InputCurrencyModel(this.currency[1]), {
+      name: 'inCurrency',
+    });
   }
 }
 

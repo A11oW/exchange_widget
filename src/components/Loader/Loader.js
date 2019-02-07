@@ -21,7 +21,7 @@ const Loader = styled.div`
   padding-top: 32px;
   min-width: 32px;
   font-size: 14px;
-  
+
   &:after {
     content: ' ';
     position: absolute;
@@ -33,7 +33,8 @@ const Loader = styled.div`
     margin-left: -16px;
     border-width: 4px;
     border-style: solid;
-    border-color: rgb(255, 237, 0) rgb(255, 255, 255) rgb(255, 255, 255) rgb(255, 237, 0);
+    border-color: rgb(255, 237, 0) rgb(255, 255, 255) rgb(255, 255, 255)
+      rgb(255, 237, 0);
     border-image: initial;
     border-radius: 50%;
     animation: ${rotate360} 1.2s linear 0s infinite normal none running;

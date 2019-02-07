@@ -8,9 +8,9 @@ Enzyme.configure({ adapter: new EnzymeAdapter() });
 
 // Snapshot API
 global.snapshot = {
-    shallow: Enzyme.shallow, // shallow support all lifecycle
-    render: Enzyme.render, // render only calls render but renders all children
-    mount: Enzyme.mount, // mount support all lifecycle
+  shallow: Enzyme.shallow, // shallow support all lifecycle
+  render: Enzyme.render, // render only calls render but renders all children
+  mount: Enzyme.mount, // mount support all lifecycle
 };
 
 // Fetch API

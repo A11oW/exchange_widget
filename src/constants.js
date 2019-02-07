@@ -11,11 +11,7 @@ export const FETCH_RATES_ATTEMPTS = 5;
  * @property {string} EUR
  * @property {string} USD
  */
-export const CURRENCY = [
-  'GBP',
-  'EUR',
-  'USD',
-];
+export const CURRENCY = ['GBP', 'EUR', 'USD'];
 
 /**
  * @type {{USD: string, EUR: string, GBP: string}} CURRENCY_SYMBOLS

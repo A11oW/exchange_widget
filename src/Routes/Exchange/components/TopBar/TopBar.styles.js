@@ -11,15 +11,21 @@ export const Box = styled.div`
   z-index: 1;
 `;
 
-export const Link = styled(({ isRight, isLeft, ...rest }) => <LinkSource {...rest}/>)`
+export const Link = styled(({ isRight, isLeft, ...rest }) => (
+  <LinkSource {...rest} />
+))`
   position: absolute;
   top: 0;
-  ${({ isLeft }) => isLeft && css`
-    left: 0;
-  `}
-  ${({ isRight }) => isRight && css`
-    right: 0;
-  `}
+  ${({ isLeft }) =>
+    isLeft &&
+    css`
+      left: 0;
+    `}
+  ${({ isRight }) =>
+    isRight &&
+    css`
+      right: 0;
+    `}
   padding: .6rem;
   color: #fff;
   text-decoration: none;

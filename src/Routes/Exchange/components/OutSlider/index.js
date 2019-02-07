@@ -1,3 +1,3 @@
-import OutSlider from './OutSlider'
+import OutSlider from './OutSlider';
 
 export default OutSlider;

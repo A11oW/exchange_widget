@@ -2,7 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
-import { Box, Point, Points, Slide, Swipe } from '../../../../components/Slider';
+import {
+  Box,
+  Point,
+  Points,
+  Slide,
+  Swipe,
+} from '../../../../components/Slider';
 import FieldGroup from '../../../../components/FieldGroup/index';
 
 @inject('store')
@@ -22,7 +28,7 @@ class OutSlider extends React.Component {
   onChangeValue = value => this.props.store.changeOutValue(value);
 
   onFocusInput = () => {
-    this.props.store.setFocusedInputCurrency("out");
+    this.props.store.setFocusedInputCurrency('out');
   };
 
   render() {
@@ -53,10 +59,12 @@ class OutSlider extends React.Component {
           ))}
         </Swipe>
         <Points>
-          {
-            Object.entries(pockets).map(([currency]) =>
-              <Point key={`point-${currency}`} active={currency === fromCurrency.currency} />)
-          }
+          {Object.entries(pockets).map(([currency]) => (
+            <Point
+              key={`point-${currency}`}
+              active={currency === fromCurrency.currency}
+            />
+          ))}
         </Points>
       </Box>
     );

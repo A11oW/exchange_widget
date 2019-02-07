@@ -1,3 +1,3 @@
-import InSlider from './InSlider'
+import InSlider from './InSlider';
 
 export default InSlider;

@@ -29,8 +29,10 @@ export const Point = styled.div`
   border-radius: 100%;
   background: #fff;
   opacity: 0.8;
-  
-  ${({ active }) => active && css`
-    opacity: 1;
-  `}
+
+  ${({ active }) =>
+    active &&
+    css`
+      opacity: 1;
+    `}
 `;

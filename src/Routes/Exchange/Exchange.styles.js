@@ -16,25 +16,25 @@ export const CurrencyTop = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
-  background: linear-gradient(to bottom, #0f54d4 0%,#3479f9 100%);
-  
+  background: linear-gradient(to bottom, #0f54d4 0%, #3479f9 100%);
+
   &:after {
-    content: " ";
+    content: ' ';
     position: absolute;
     left: calc(50% - 20px);
     bottom: -20px;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    
+
     border-top: 20px solid #3479f9;
   }
 `;
 export const CurrencyBottom = styled.div`
   height: 100%;
   width: 100%;
-  background: linear-gradient(to bottom, #2259c3 0%,#1649a9 100%);
+  background: linear-gradient(to bottom, #2259c3 0%, #1649a9 100%);
 `;
 
 export const LoaderCenter = styled.div`

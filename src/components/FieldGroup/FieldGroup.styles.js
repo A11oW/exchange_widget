@@ -18,10 +18,13 @@ export const Value = styled.input`
   border: 0;
   background: transparent;
   outline: none;
-  
+
   width: 100%;
   padding: 1.2rem;
-  ${({ fontsize }) => css`font-size: ${fontsize}rem`};
+  ${({ fontsize }) =>
+    css`
+      font-size: ${fontsize}rem;
+    `};
   text-align: right;
   color: #fff;
 `;

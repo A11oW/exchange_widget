@@ -11,7 +11,8 @@
     "stats:analyzer": "webpack-bundle-analyzer umd/stats.json dist",
     "test": "jest --no-cache",
     "test:coverage": "jest --no-cache --coverage",
-    "test:watch": "jest --no-cache --watch --coverage"
+    "test:watch": "jest --no-cache --watch --coverage",
+    "prettier": "prettier --write '**/*.{js,json,css,md,jsx}'"
   },
   "dependencies": {
     "currency.js": "^1.2.1",
@@ -54,6 +55,7 @@
     "jest-styled-components": "^6.3.1",
     "jest-svg-transformer": "^1.0.0",
     "nwb": "0.23.x",
+    "prettier": "1.16.4",
     "react-test-renderer": "^16.7.0",
     "sinon": "^7.2.3",
     "stats-webpack-plugin": "^0.7.0",
@@ -66,5 +68,10 @@
     "projects": [
       "<rootDir>/jest.config.js"
     ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "trailingComma": "es5"
   }
 }
