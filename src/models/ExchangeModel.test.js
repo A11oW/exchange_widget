@@ -1,55 +1,64 @@
 import currency from 'currency.js';
+import { when } from 'mobx';
 
 import InputCurrencyModel from './InputCurrencyModel';
 import ExchangeModel from './ExchangeModel';
 import { CURRENCY, CURRENCY_SYMBOLS, STATES } from '../constants';
 
 describe('ExchangeModel', () => {
-  test('create new model', () => {
-    const model = new ExchangeModel();
+  let model;
+  beforeEach(() => {
+    model = new ExchangeModel();
+  });
 
-    expect(model.rates).toEqual({});
+  it('create new model', () => {
+    expect(model.fx.rates).toEqual({});
+    expect(model.fx.timestamp).toBe(0);
+    expect(model.fx.base).toBeNull();
     expect(model.fetchRatesState).toBe(STATES.FETCH_RATES__INITIAL);
-    expect(model.ratesTimestamp).toBe(0);
     expect(model.fetchRatesFailCounter).toBe(0);
     expect(model.currency).toEqual(CURRENCY);
     expect(model.currencySymbol).toEqual(CURRENCY_SYMBOLS);
     expect(model.pockets.GBP instanceof currency).toBeTruthy();
     expect(model.pockets.EUR instanceof currency).toBeTruthy();
     expect(model.pockets.USD instanceof currency).toBeTruthy();
+    expect(model.pockets.GBP.value).toBe(58.33);
+    expect(model.pockets.EUR.value).toBe(116.2);
+    expect(model.pockets.USD.value).toBe(25.51);
     expect(model.fromCurrency instanceof InputCurrencyModel).toBeTruthy();
     expect(model.fromCurrency instanceof InputCurrencyModel).toBeTruthy();
     expect(model.fromCurrency instanceof InputCurrencyModel).toBeTruthy();
     expect(model.fromCurrency instanceof InputCurrencyModel).toBeTruthy();
   });
 
-  test('action changeFromCurrency', () => {
-    const model = new ExchangeModel();
-
+  it('action setFromCurrency', () => {
     expect(model.fromCurrency.value).toBe('');
     expect(model.inCurrency.value).toBe('');
 
-    model.changeFromCurrency('USD');
+    model.setFromCurrency('USD');
 
     expect(model.fromCurrency.currency).toBe('USD');
+    expect(() => model.setFromCurrency('RUB')).toThrow(
+      'Argument currencyName must be one of Model.currency list'
+    );
   });
 
-  test('action changeInCurrency', () => {
-    const model = new ExchangeModel();
-
+  it('action setInCurrency', () => {
     expect(model.fromCurrency.value).toBe('');
     expect(model.inCurrency.value).toBe('');
 
-    model.changeInCurrency('USD');
+    model.setInCurrency('USD');
 
     expect(model.inCurrency.currency).toBe('USD');
+    expect(() => model.setInCurrency('RUB')).toThrow(
+      'Argument currencyName must be one of Model.currency list'
+    );
   });
 
-  test('action setRates', () => {
-    const model = new ExchangeModel();
+  it('action setRates', () => {
     const rates = {
-      date: "12.02.1999",
-      base: "GBP",
+      date: '12.02.1999',
+      base: 'GBP',
       rates: {
         GBP: 1,
         USD: 2,
@@ -59,12 +68,12 @@ describe('ExchangeModel', () => {
 
     model.setRates(rates);
 
-    expect(model.rates.GBP).toBe(1);
-    expect(model.rates.USD).toBe(2);
-    expect(model.rates.EUR).toBe(10);
-    expect(model.ratesTimestamp).toBe(new Date("12.02.1999").getTime());
-    expect(model.rates).toEqual(rates.rates);
-    expect(model.fx.base).toEqual("GBP");
+    expect(model.fx.rates.GBP).toBe(1);
+    expect(model.fx.rates.USD).toBe(2);
+    expect(model.fx.rates.EUR).toBe(10);
+    expect(model.fx.timestamp).toBe(new Date('12.02.1999').getTime());
+    expect(model.fx.rates).toEqual(rates.rates);
+    expect(model.fx.base).toEqual('GBP');
     expect(model.fx.rates).toEqual(rates.rates);
 
     expect(() => {
@@ -81,23 +90,22 @@ describe('ExchangeModel', () => {
       });
     }).toThrow('Invalid rates date');
 
-    rates.date = "10.02.1998";
+    rates.date = '10.02.1998';
     model.setRates(rates);
 
-    expect(model.rates.GBP).toBe(1);
-    expect(model.rates.USD).toBe(2);
-    expect(model.rates.EUR).toBe(10);
-    expect(model.ratesTimestamp).toBe(new Date("12.02.1999").getTime());
-    expect(model.rates).toEqual(rates.rates);
-    expect(model.fx.base).toEqual("GBP");
+    expect(model.fx.rates.GBP).toBe(1);
+    expect(model.fx.rates.USD).toBe(2);
+    expect(model.fx.rates.EUR).toBe(10);
+    expect(model.fx.timestamp).toBe(new Date('12.02.1999').getTime());
+    expect(model.fx.rates).toEqual(rates.rates);
+    expect(model.fx.base).toEqual('GBP');
     expect(model.fx.rates).toEqual(rates.rates);
   });
 
-  describe('action changeFromValue', () => {
-    const model = new ExchangeModel();
+  describe('action setFromValue', () => {
     const rates = {
-      date: "12.02.1996",
-      base: "GBP",
+      date: '12.02.1996',
+      base: 'GBP',
       rates: {
         GBP: 1,
         USD: 2,
@@ -105,31 +113,30 @@ describe('ExchangeModel', () => {
       },
     };
 
-    test('changeValue', () => {
+    it('changeValue', () => {
       model.setRates(rates);
-      model.changeFromValue('34');
+      model.setFromValue('34');
       expect(model.fromCurrency.value).toBe('34');
       expect(model.inCurrency.value).toBe('340');
     });
 
-    test('changeValue with same currency', () => {
+    it('changeValue with same currency', () => {
       expect(model.fromCurrency.currency).toBe('GBP');
       expect(model.inCurrency.currency).toBe('EUR');
 
-      model.changeInCurrency('GBP');
+      model.setInCurrency('GBP');
       expect(model.inCurrency.currency).toBe('GBP');
 
-      model.changeFromValue('10.47');
+      model.setFromValue('10.47');
       expect(model.fromCurrency.value).toBe('10.47');
       expect(model.inCurrency.value).toBe('10.47');
-    })
+    });
   });
 
-  describe('action changeInValue', () => {
-    const model = new ExchangeModel();
+  describe('action setInValue', () => {
     const rates = {
-      date: "12.02.1996",
-      base: "GBP",
+      date: '12.02.1996',
+      base: 'GBP',
       rates: {
         GBP: 1,
         USD: 1.35,
@@ -137,59 +144,174 @@ describe('ExchangeModel', () => {
       },
     };
 
-    test('changeValue', () => {
+    it('changeValue', () => {
       model.setRates(rates);
-      model.changeInValue('63');
+      model.setInValue('63');
       expect(model.inCurrency.value).toBe('63');
       expect(model.fromCurrency.value).toBe('50.80645161290323');
-
     });
 
-    test('changeValue with same currency', () => {
+    it('changeValue with same currency', () => {
       expect(model.fromCurrency.currency).toBe('GBP');
       expect(model.inCurrency.currency).toBe('EUR');
 
-      model.changeFromCurrency('EUR');
+      model.setFromCurrency('EUR');
       expect(model.fromCurrency.currency).toBe('EUR');
 
-      model.changeInValue('0.37');
+      model.setInValue('0.37');
       expect(model.fromCurrency.value).toBe('0.37');
       expect(model.inCurrency.value).toBe('0.37');
-    })
+    });
   });
 
-  test('action setFocusedInputCurrency', () => {
-    const model = new ExchangeModel();
-
-    expect(model.lastFocusedInputCurrency).toBe();
-
-    model.setFocusedInputCurrency("in");
-    expect(model.lastFocusedInputCurrency).toBe('in');
-
-    model.setFocusedInputCurrency("out");
+  it('action setFocusedInputCurrency', () => {
     expect(model.lastFocusedInputCurrency).toBe('out');
 
-    expect(() => { model.setFocusedInputCurrency(); }).toThrow('Argument inputType must be "in" or "out" string');
-  })
+    model.setFocusedInputCurrency('in');
+    expect(model.lastFocusedInputCurrency).toBe('in');
 
-  /*  test('create new model', () => {
-      const model = new InputCurrencyModel("USD");
-      expect(model.value).toBe(0);
-      expect(model.currency).toBe("USD");
-      expect(model.format).toBe("0");
+    model.setFocusedInputCurrency('out');
+    expect(model.lastFocusedInputCurrency).toBe('out');
+
+    expect(() => {
+      model.setFocusedInputCurrency();
+    }).toThrow('Argument inputType must be "in" or "out" string');
+  });
+
+  it('computed get currencyRate', () => {
+    const rates = {
+      date: '12.02.1996',
+      base: 'GBP',
+      rates: {
+        GBP: 1,
+        USD: 1.2928774929,
+        EUR: 1.1396011396,
+      },
+    };
+
+    model.setRates(rates);
+
+    expect(model.fromCurrency.currency).toBe('GBP');
+    expect(model.inCurrency.currency).toBe('EUR');
+    expect(model.fx.rates[model.inCurrency.currency]).toBe(1.1396011396);
+    expect(model.fx.rates[model.fromCurrency.currency]).toBe(1);
+    expect(model.currencyRate).toBe(1.1396);
+
+    model.setFromCurrency('USD');
+
+    expect(model.fromCurrency.currency).toBe('USD');
+    expect(model.currencyRate).toBe(0.8814);
+  });
+
+  it('action setExchange', () => {
+    const rates = {
+      date: '12.02.2000',
+      base: 'GBP',
+      rates: {
+        GBP: 1,
+        USD: 1.2928774929,
+        EUR: 1.1396011396,
+      },
+    };
+
+    model.setRates(rates);
+
+    expect(model.pockets.GBP.value).toBe(58.33);
+    expect(model.pockets.EUR.value).toBe(116.2);
+    expect(model.pockets.USD.value).toBe(25.51);
+    expect(model.fx.rates.GBP).toBe(1);
+    expect(model.fx.rates.USD).toBe(1.2928774929);
+    expect(model.fx.rates.EUR).toBe(1.1396011396);
+
+    model.setFromValue(1);
+    model.setExchange();
+
+    expect(model.pockets.GBP.value).toBe(57.33);
+    expect(model.pockets.EUR.value).toBe(117.34);
+    expect(model.pockets.USD.value).toBe(25.51);
+  });
+
+  describe('action fetchRates', () => {
+    it('fetchRatesSuccess', () => {
+      // expect.assertions(1);
+      const modelAsync = new ExchangeModel();
+      const response = {
+        base: 'GBP',
+        date: '02.06.2015',
+        rates: {
+          GBP: 1,
+          USD: 1.2904589345,
+          EUR: 1.1556475676,
+        },
+      };
+
+      fetch.resetMocks();
+      fetch.mockResponseOnce(JSON.stringify(response));
+
+      modelAsync.fetchRates();
+
+      when(
+        () => modelAsync.fetchRatesState === STATES.FETCH_RATES__SUCCESS
+      ).then(() => {
+        expect(modelAsync.rates.GBP).toBe(1);
+        expect(modelAsync.rates.USD).toBe(1.2904589345);
+        expect(modelAsync.rates.EUR).toBe(1.1556475676);
+        expect(modelAsync.fx.timestamp).toBe(new Date('02.06.2015').getTime());
+        expect(modelAsync.rates).toEqual(response.rates);
+        expect(modelAsync.fx.base).toEqual('GBP');
+        expect(modelAsync.fx.rates).toEqual(response.rates);
+      });
     });
 
-    test('empty currency', () => {
-      expect(() => { new InputCurrencyModel() }).toThrow('Argument currency must be not empty');
+    it('fetchRatesError', async () => {
+      const modelAsync = new ExchangeModel();
+      const consoleErrorMock = jest.spyOn(global.console, 'warn');
+
+      fetch.resetMocks();
+      fetch.mockReject('Server error');
+
+      when(
+        () => modelAsync.fetchRatesState === STATES.FETCH_RATES__FAILURE
+      ).then(() => {
+        expect(consoleErrorMock).toHaveBeenCalledTimes(5);
+        consoleErrorMock.mockRestore();
+      });
+
+      modelAsync.fetchRates();
     });
+  });
 
-    test('setValue', () => {
-      const value = 23424.45465;
-      const model = new InputCurrencyModel("USD");
-      model.setValue(23424.45465);
+  it('enableReactionOnChangingRates', () => {
+    const model = new ExchangeModel();
+    model.enableReactionOnChangingRates();
 
-      expect(model.value).toBe(value);
-      expect(model.format).toBe("23424.45");
-      expect(() => { model.setValue("4269") }).toThrow('Argument value must be a number');
-    });*/
+    const rates = [
+      {
+        base: 'GBP',
+        date: '01.01.2019',
+        rates: {
+          GBP: 1,
+          USD: 1.3033607375,
+          EUR: 1.1466180501,
+        },
+      },
+      {
+        base: 'GBP',
+        date: '02.01.2019',
+        rates: {
+          GBP: 1,
+          USD: 1.2904589345,
+          EUR: 1.1556475676,
+        },
+      },
+    ];
+
+    model.setRates(rates[0]);
+    model.setFromValue(1);
+
+    expect(model.fromCurrency.value).toBe('1');
+    expect(model.inCurrency.value).toBe('1.1466180501');
+    model.setRates(rates[1]);
+    expect(model.inCurrency.value).toBe('1.1556475676');
+  });
 });
