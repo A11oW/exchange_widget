@@ -1,4 +1,4 @@
-import formatNumber from '../../src/utils/formatNumber';
+import formatNumber from './formatNumber';
 
 describe('Util formatNumber', () => {
   it('Valid value', () => {

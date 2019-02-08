@@ -25,7 +25,13 @@ const App = ({ store }) => {
     );
   }
 
-  return [<DevTools key="devtool" />, <Routes key="routes" />];
+  const DOM = [<Routes key="routes" />];
+
+  if (process.env.NODE_ENV === 'development') {
+    DOM.push(<DevTools key="devtools" />);
+  }
+
+  return DOM;
 };
 
 export default inject('store')(observer(App));
