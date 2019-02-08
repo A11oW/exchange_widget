@@ -21,10 +21,10 @@ module.exports = {
     },
     extra: {
       plugins: [
-        new BundleAnalyzerPlugin({
-          /*generateStatsFile: true,
-          analyzerMode: 'disabled',*/
-        }),
+        /*new BundleAnalyzerPlugin({
+          /!*generateStatsFile: true,
+          analyzerMode: 'disabled',*!/
+        }),*/
         new EnvironmentPlugin(['NODE_ENV']),
       ],
     },
