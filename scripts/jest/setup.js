@@ -1,4 +1,5 @@
-require('jest-styled-components');
+import 'jest-styled-components';
+import 'babel-polyfill';
 
 const Enzyme = require('enzyme');
 const EnzymeAdapter = require('enzyme-adapter-react-16');

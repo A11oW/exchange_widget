@@ -7,6 +7,7 @@ export const Box = styled.div`
 
 export const Slide = styled.div`
   height: 100%;
+  width: 100%;
 `;
 
 export const Swipe = styled(ReactSwipe)`

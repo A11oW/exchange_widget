@@ -22,10 +22,10 @@ class OutSlider extends React.Component {
   };
 
   onChangeSlide = (index, elem) => {
-    this.props.store.changeFromCurrency(elem.dataset.currency);
+    this.props.store.setFromCurrency(elem.dataset.currency);
   };
 
-  onChangeValue = value => this.props.store.changeFromValue(value);
+  onChangeValue = value => this.props.store.setFromValue(value);
 
   onFocusInput = () => {
     this.props.store.setFocusedInputCurrency('out');

@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Box = styled.label`
   height: 50vh;
+  width: 100%;
   display: flex;
   align-items: center;
 `;

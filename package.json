@@ -6,6 +6,7 @@
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
+    "server": "node server/index.js",
     "start": "cross-env NODE_ENV=development && nwb serve-react-app",
     "stats:analyzer": "webpack-bundle-analyzer umd/stats.json dist",
     "test": "jest --no-cache",
@@ -15,6 +16,7 @@
   },
   "dependencies": {
     "currency.js": "^1.2.1",
+    "hammer-touchemulator": "^0.0.2",
     "mirrorkey": "^1.2.0",
     "mobx": "^5.9.0",
     "mobx-devtools-mst": "^0.9.18",
