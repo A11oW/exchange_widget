@@ -1,11 +1,17 @@
 import { action, computed, observable, reaction } from 'mobx';
 import remotedev from 'mobx-remotedev';
-import fx from 'money';
 import currency from 'currency.js';
 import api from '../api';
 
+import Fx from './Fx';
+
 import InputCurrencyModel from './InputCurrencyModel';
-import { CURRENCY, CURRENCY_SYMBOLS, FETCH_RATES_ATTEMPTS, STATES } from '../constants';
+import {
+  CURRENCY,
+  CURRENCY_SYMBOLS,
+  FETCH_RATES_ATTEMPTS,
+  STATES,
+} from '../constants';
 
 @remotedev({ global: true })
 class ExchangeModel {
@@ -18,21 +24,26 @@ class ExchangeModel {
   @observable fetchRatesCounter;
 
   @observable rates;
-  @observable ratesTimestamp;
 
   @observable pockets = {};
   @observable fromCurrency;
   @observable inCurrency;
   @observable lastFocusedInputCurrency;
 
-  @action changeFromCurrency(currencyName) {
+  @action setFromCurrency(currencyName) {
+    if (!this.currency.includes(currencyName)) {
+      throw new Error(
+        'Argument currencyName must be one of Model.currency list'
+      );
+    }
+
     this.fromCurrency.setCurrency(currencyName);
 
     this.fromCurrency.setValue('');
     this.inCurrency.setValue('');
   }
 
-  @action changeFromValue(value) {
+  @action setFromValue(value) {
     this.fromCurrency.setValue(value);
 
     if (this.fromCurrency.currency === this.inCurrency.currency) {
@@ -44,18 +55,24 @@ class ExchangeModel {
       this.fx.convert(value, {
         from: this.fromCurrency.currency,
         to: this.inCurrency.currency,
-      }),
+      })
     );
   }
 
-  @action changeInCurrency(currencyName) {
+  @action setInCurrency(currencyName) {
+    if (!this.currency.includes(currencyName)) {
+      throw new Error(
+        'Argument currencyName must be one of Model.currency list'
+      );
+    }
+
     this.inCurrency.setCurrency(currencyName);
 
     this.inCurrency.setValue('');
     this.fromCurrency.setValue('');
   }
 
-  @action changeInValue(value) {
+  @action setInValue(value) {
     this.inCurrency.setValue(value);
 
     if (this.inCurrency.currency === this.fromCurrency.currency) {
@@ -67,7 +84,7 @@ class ExchangeModel {
       this.fx.convert(value, {
         from: this.inCurrency.currency,
         to: this.fromCurrency.currency,
-      }),
+      })
     );
   }
 
@@ -88,10 +105,9 @@ class ExchangeModel {
   }
 
   @computed get currencyRate() {
-    return (
-      this.rates[this.inCurrency.currency] /
-      this.rates[this.fromCurrency.currency]
-    );
+    return currency(this.fx.rates[this.inCurrency.currency], {
+      precision: 4,
+    }).divide(this.fx.rates[this.fromCurrency.currency]).value;
   }
 
   enableReactionOnChangingRates() {
@@ -100,7 +116,7 @@ class ExchangeModel {
     }
 
     this.reactionOnChangingRates = reaction(
-      () => this.rates,
+      () => this.fx.rates,
       () => {
         if (this.lastFocusedInputCurrency === 'in') {
           const value = this.inCurrency.value;
@@ -109,7 +125,7 @@ class ExchangeModel {
             this.fx.convert(value, {
               from: this.inCurrency.currency,
               to: this.fromCurrency.currency,
-            }),
+            })
           );
         } else if (this.lastFocusedInputCurrency === 'out') {
           const value = this.fromCurrency.value;
@@ -118,10 +134,10 @@ class ExchangeModel {
             this.fx.convert(value, {
               from: this.fromCurrency.currency,
               to: this.inCurrency.currency,
-            }),
+            })
           );
         }
-      },
+      }
     );
   }
 
@@ -172,30 +188,30 @@ class ExchangeModel {
       throw new RangeError('Invalid rates date');
     }
 
-    if (timestamp < this.ratesTimestamp) {
+    if (timestamp < this.fx.timestamp) {
       return;
     }
 
-    this.ratesTimestamp = timestamp;
-    this.rates = payload.rates;
+    this.fx.rates = payload.rates;
+    this.fx.timestamp = timestamp;
     this.fx.base = payload.base;
-    this.fx.rates = this.rates;
+    this.fx.rates = this.fx.rates;
   }
 
   @action
   fetchRatesError(error) {
     // TODO differents logic from depending response codes (5xx, 4xx)
     // for example for 4xx don't retry request
-    if (console.error) {
-      console.error(error);
-    } else {
-      console.log(error);
+    if (error) {
+      console.warn ? console.warn(error) : console.log(error);
     }
 
     if (this.fetchRatesFailCounter === FETCH_RATES_ATTEMPTS - 1) {
       this.fetchRatesState = STATES.FETCH_RATES__FAILURE;
       this.fetchRatesFailCounter = 0;
+
       clearInterval(this.fetchRatesIntervalId);
+      this.fetchRatesIntervalId = null;
       return;
     }
 
@@ -215,6 +231,7 @@ class ExchangeModel {
   @action
   stopFetchRates() {
     clearInterval(this.fetchRatesIntervalId);
+    this.fetchRatesIntervalId = null;
   }
 
   @action setExchange() {
@@ -226,18 +243,19 @@ class ExchangeModel {
       to: inCurrency,
     });
 
+    this.fromCurrency.setValue(0);
+    this.inCurrency.setValue(0);
     this.pockets[fromCurrency] = this.pockets[fromCurrency].subtract(fromValue);
     this.pockets[inCurrency] = this.pockets[inCurrency].add(inValue);
   }
 
   constructor() {
-    this.fx = fx;
-    this.rates = {};
+    this.fx = remotedev(new Fx(), { name: 'Fx' });
     this.fetchRatesState = STATES.FETCH_RATES__INITIAL;
-    this.ratesTimestamp = 0;
     this.fetchRatesFailCounter = 0;
     this.currency = CURRENCY;
     this.currencySymbol = CURRENCY_SYMBOLS;
+    this.lastFocusedInputCurrency = 'out';
 
     this.pockets.GBP = currency(58.33, {
       formatWithSymbol: true,

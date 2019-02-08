@@ -17,7 +17,7 @@ const App = ({ store }) => {
     );
   }
 
-  if (!Object.keys(store.rates).length) {
+  if (!Object.keys(store.fx.rates).length) {
     return (
       <Box>
         <Loader />
@@ -28,7 +28,7 @@ const App = ({ store }) => {
   const DOM = [<Routes key="routes" />];
 
   if (process.env.NODE_ENV === 'development') {
-    DOM.push(<DevTools key="devtools" />);
+    // DOM.push(<DevTools key="devtools" />);
   }
 
   return DOM;
