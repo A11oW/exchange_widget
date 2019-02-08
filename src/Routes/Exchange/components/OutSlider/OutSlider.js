@@ -25,7 +25,7 @@ class OutSlider extends React.Component {
     this.props.store.changeFromCurrency(elem.dataset.currency);
   };
 
-  onChangeValue = value => this.props.store.changeOutValue(value);
+  onChangeValue = value => this.props.store.changeFromValue(value);
 
   onFocusInput = () => {
     this.props.store.setFocusedInputCurrency('out');

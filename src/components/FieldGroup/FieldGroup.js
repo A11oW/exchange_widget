@@ -44,7 +44,7 @@ class FieldGroup extends React.Component {
   render() {
     const { label, currency, prefix, pocket } = this.props;
     const valueWithPrefix =
-      currency.value && currency.value.toString().length
+      currency.value && currency.value.toString().length && (currency.value != 0)
         ? prefix + currency.format
         : '';
     const fontSize = 3 - valueWithPrefix.length * 0.06;
@@ -53,6 +53,7 @@ class FieldGroup extends React.Component {
       <Box>
         <Label>{label}</Label>
         <Value
+          tabIndex="-1"
           autoComplete="off"
           type="text"
           maxLength="12"

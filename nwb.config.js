@@ -1,3 +1,4 @@
+const EnvironmentPlugin = require('webpack').EnvironmentPlugin;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
@@ -24,6 +25,7 @@ module.exports = {
           /*generateStatsFile: true,
           analyzerMode: 'disabled',*/
         }),
+        new EnvironmentPlugin(['NODE_ENV']),
       ],
     },
   },

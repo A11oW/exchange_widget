@@ -6,12 +6,11 @@
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
-    "start": "nwb serve-react-app",
-    "test:jest": "jest",
+    "start": "cross-env NODE_ENV=development && nwb serve-react-app",
     "stats:analyzer": "webpack-bundle-analyzer umd/stats.json dist",
     "test": "jest --no-cache",
     "test:coverage": "jest --no-cache --coverage",
-    "test:watch": "jest --no-cache --watch --coverage",
+    "test:watch": "jest --no-cache --watch --coverage --runInBand",
     "prettier": "prettier --write '**/*.{js,json,css,md,jsx}'"
   },
   "dependencies": {
@@ -46,6 +45,7 @@
     "babel-preset-react": "^6.24.1",
     "chai": "^4.2.0",
     "cors": "^2.8.5",
+    "cross-env": "^5.2.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.0",
     "express": "^4.16.4",

@@ -30,7 +30,7 @@ app.get('/rates', function(req, res) {
   const number = Math.round(Math.random());
   const rates = RATES_DATA[number];
 
-  rates.timestamp = new Date().getTime();
+  rates.date = new Date();
 
   res.json(rates);
 });

@@ -5,12 +5,7 @@ import currency from 'currency.js';
 import api from '../api';
 
 import InputCurrencyModel from './InputCurrencyModel';
-import {
-  FETCH_RATES_ATTEMPTS,
-  STATES,
-  CURRENCY,
-  CURRENCY_SYMBOLS,
-} from '../constants';
+import { CURRENCY, CURRENCY_SYMBOLS, FETCH_RATES_ATTEMPTS, STATES } from '../constants';
 
 @remotedev({ global: true })
 class ExchangeModel {
@@ -33,11 +28,11 @@ class ExchangeModel {
   @action changeFromCurrency(currencyName) {
     this.fromCurrency.setCurrency(currencyName);
 
-    this.fromCurrency.setValue(0);
-    this.inCurrency.setValue(0);
+    this.fromCurrency.setValue('');
+    this.inCurrency.setValue('');
   }
 
-  @action changeOutValue(value) {
+  @action changeFromValue(value) {
     this.fromCurrency.setValue(value);
 
     if (this.fromCurrency.currency === this.inCurrency.currency) {
@@ -46,18 +41,18 @@ class ExchangeModel {
     }
 
     this.inCurrency.setValue(
-      fx.convert(value, {
+      this.fx.convert(value, {
         from: this.fromCurrency.currency,
         to: this.inCurrency.currency,
-      })
+      }),
     );
   }
 
   @action changeInCurrency(currencyName) {
     this.inCurrency.setCurrency(currencyName);
 
-    this.inCurrency.setValue(0);
-    this.fromCurrency.setValue(0);
+    this.inCurrency.setValue('');
+    this.fromCurrency.setValue('');
   }
 
   @action changeInValue(value) {
@@ -69,21 +64,26 @@ class ExchangeModel {
     }
 
     this.fromCurrency.setValue(
-      fx.convert(value, {
+      this.fx.convert(value, {
         from: this.inCurrency.currency,
         to: this.fromCurrency.currency,
-      })
+      }),
     );
   }
 
   /**
    * @param inputName "in" || "out"
    */
-  @action setFocusedInputCurrency(inputName) {
-    if (inputName === 'in') {
-      this.lastFocusedInputCurrency = 'in';
-    } else if (inputName === 'out') {
-      this.lastFocusedInputCurrency = 'out';
+  @action setFocusedInputCurrency(inputType) {
+    switch (inputType) {
+      case 'in':
+        this.lastFocusedInputCurrency = 'in';
+        break;
+      case 'out':
+        this.lastFocusedInputCurrency = 'out';
+        break;
+      default:
+        throw new RangeError('Argument inputType must be "in" or "out" string');
     }
   }
 
@@ -101,27 +101,27 @@ class ExchangeModel {
 
     this.reactionOnChangingRates = reaction(
       () => this.rates,
-      rates => {
+      () => {
         if (this.lastFocusedInputCurrency === 'in') {
           const value = this.inCurrency.value;
 
           this.fromCurrency.setValue(
-            fx.convert(value, {
+            this.fx.convert(value, {
               from: this.inCurrency.currency,
               to: this.fromCurrency.currency,
-            })
+            }),
           );
         } else if (this.lastFocusedInputCurrency === 'out') {
           const value = this.fromCurrency.value;
 
           this.inCurrency.setValue(
-            fx.convert(value, {
+            this.fx.convert(value, {
               from: this.fromCurrency.currency,
               to: this.inCurrency.currency,
-            })
+            }),
           );
         }
-      }
+      },
     );
   }
 
@@ -153,32 +153,45 @@ class ExchangeModel {
   }
 
   @action
-  fetchRatesSuccess(data) {
-    this.rates = data.rates;
-
-    try {
-      const date = new Date(data.date).getTime();
-
-      if (date < this.ratesTimestamp) {
-        return;
-      }
-
-      this.ratesTimestamp = date;
-    } catch (error) {
-      throw new RangeError('Invalid rates date from server');
-    }
-
-    fx.base = data.base;
-    fx.rates = this.rates;
+  fetchRatesSuccess(payload) {
+    this.setRates(payload);
 
     this.fetchRatesFailCounter = 0;
     this.fetchRatesState = STATES.FETCH_RATES__SUCCESS;
   }
 
   @action
-  fetchRatesError() {
+  setRates(payload) {
+    if (!payload) {
+      throw new Error('Argument payload must be not empty');
+    }
+
+    const timestamp = new Date(payload.date).getTime();
+
+    if (Number.isNaN(timestamp)) {
+      throw new RangeError('Invalid rates date');
+    }
+
+    if (timestamp < this.ratesTimestamp) {
+      return;
+    }
+
+    this.ratesTimestamp = timestamp;
+    this.rates = payload.rates;
+    this.fx.base = payload.base;
+    this.fx.rates = this.rates;
+  }
+
+  @action
+  fetchRatesError(error) {
     // TODO differents logic from depending response codes (5xx, 4xx)
     // for example for 4xx don't retry request
+    if (console.error) {
+      console.error(error);
+    } else {
+      console.log(error);
+    }
+
     if (this.fetchRatesFailCounter === FETCH_RATES_ATTEMPTS - 1) {
       this.fetchRatesState = STATES.FETCH_RATES__FAILURE;
       this.fetchRatesFailCounter = 0;
@@ -208,7 +221,7 @@ class ExchangeModel {
     const fromCurrency = this.fromCurrency.currency;
     const inCurrency = this.inCurrency.currency;
     const fromValue = this.fromCurrency.value;
-    const inValue = fx.convert(fromValue, {
+    const inValue = this.fx.convert(fromValue, {
       from: fromCurrency,
       to: inCurrency,
     });
@@ -218,6 +231,7 @@ class ExchangeModel {
   }
 
   constructor() {
+    this.fx = fx;
     this.rates = {};
     this.fetchRatesState = STATES.FETCH_RATES__INITIAL;
     this.ratesTimestamp = 0;
