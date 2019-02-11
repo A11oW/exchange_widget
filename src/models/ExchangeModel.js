@@ -250,7 +250,7 @@ class ExchangeModel {
   }
 
   constructor() {
-    this.fx = remotedev(new Fx(), { name: 'Fx' });
+    this.fx = new Fx();
     this.fetchRatesState = STATES.FETCH_RATES__INITIAL;
     this.fetchRatesFailCounter = 0;
     this.currency = CURRENCY;
