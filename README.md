@@ -2,11 +2,11 @@
 
 Web application widget for exchange currency.
 
-I never used mobx and this application is great opportunity correct this
+I have never used mobx before and this application is great opportunity fix it
 
-- **Slider currency on exchange page work only on touch devices. Use devtool emulator**
+- **Swipe currency on exchange page works on touch devices only. Use devtool emulator or mobile device**
 
-## 🚀 Start develop
+## 🚀 Start for develop
 
 ```yarn```
 
@@ -16,7 +16,7 @@ I never used mobx and this application is great opportunity correct this
 
 ## 😵 TODO features
  - [ ] Write money class for correct working and formating
- - [ ] Write self slider with desktop mouse events
+ - [ ] Write self swipe slider with desktop mouse events
  - [ ] Add more tests for UI
  - [ ] Rewrite code to TypeScript for using types
  - [ ] Rewrite webpack and babel configs
