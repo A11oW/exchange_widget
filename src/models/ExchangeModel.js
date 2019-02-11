@@ -1,5 +1,4 @@
 import { action, computed, observable, reaction } from 'mobx';
-import remotedev from 'mobx-remotedev';
 import currency from 'currency.js';
 import api from '../api';
 
@@ -13,7 +12,6 @@ import {
   STATES,
 } from '../constants';
 
-@remotedev({ global: true })
 class ExchangeModel {
   reactionOnChangingRates;
 
@@ -250,7 +248,7 @@ class ExchangeModel {
   }
 
   constructor() {
-    this.fx = remotedev(new Fx(), { name: 'Fx' });
+    this.fx = new Fx();
     this.fetchRatesState = STATES.FETCH_RATES__INITIAL;
     this.fetchRatesFailCounter = 0;
     this.currency = CURRENCY;
@@ -270,12 +268,8 @@ class ExchangeModel {
       symbol: this.currencySymbol.USD,
     });
 
-    this.fromCurrency = remotedev(new InputCurrencyModel(this.currency[0]), {
-      name: 'fromCurrency',
-    });
-    this.inCurrency = remotedev(new InputCurrencyModel(this.currency[1]), {
-      name: 'inCurrency',
-    });
+    this.fromCurrency = new InputCurrencyModel(this.currency[0]);
+    this.inCurrency = new InputCurrencyModel(this.currency[1]);
   }
 }
 
