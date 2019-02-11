@@ -23,11 +23,19 @@ export default class Fx {
   getRate(to, from) {
     const rates = this.rates;
 
-    // Make sure the base rate is in the rates object:
-    rates[this.base] = 1;
+    if (!rates || !Object.keys(rates).length) {
+      throw new Error('Empty rates');
+    }
+
+    if (!this.base || !rates[this.base]) {
+      throw new Error('Empty base currency');
+    }
 
     // Throw an error if either rate isn't in the rates array
-    if (!rates[to] || !rates[from]) throw 'fx error';
+    if (!rates[to] || !rates[from]) throw new Error('fx error');
+
+    // Make sure the base rate is in the rates object:
+    rates[this.base] = 1;
 
     // If `from` currency === fx.base, return the basic exchange rate for the `to` currency
     if (from === this.base) {
