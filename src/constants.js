@@ -1,7 +1,8 @@
 import mirrorkey from 'mirrorkey';
 
 // export const RATES_ENDPOINT = 'http://localhost:4000/latest?base=GBP&symbols=USD,EUR,GBP';
-export const RATES_ENDPOINT = 'http://192.168.0.31:4000/rates';
+export const RATES_ENDPOINT = 'http://localhost:4000/rates';
+// export const RATES_ENDPOINT = 'http://192.168.0.31:4000/rates';
 // export const RATES_ENDxPOINT = 'https://api.exchangeratesapi.io/latest?base=GBP&symbols=USD,EUR,GBP';
 export const FETCH_RATES_ATTEMPTS = 5;
 
